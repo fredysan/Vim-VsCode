@@ -2001,8 +2001,20 @@ export abstract class MoveQuoteMatch extends BaseMovement {
     }
 
     const text = vimState.document.lineAt(position).text;
-    const quoteMatcher = new QuoteMatcher(this.charToMatch, text);
-    const quoteIndices = quoteMatcher.surroundingQuotes(position.character);
+    let quoteMatcher = new QuoteMatcher(this.charToMatch, text);
+    let quoteIndices = quoteMatcher.surroundingQuotes(position.character);
+    if (quoteIndices === undefined) {
+      return failedMovement(vimState);
+    }
+
+    quoteMatcher = new QuoteMatcher('"', text);
+    quoteIndices = quoteMatcher.surroundingQuotes(position.character);
+    if (quoteIndices === undefined) {
+      return failedMovement(vimState);
+    }
+
+    quoteMatcher = new QuoteMatcher('`', text);
+    quoteIndices = quoteMatcher.surroundingQuotes(position.character);
     if (quoteIndices === undefined) {
       return failedMovement(vimState);
     }
