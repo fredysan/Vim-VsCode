@@ -1,7 +1,13 @@
 #!/bin/bash
+
+# 1. Update the extension inside VsCode as usual.
+# 2. Run ./update.sh '[TAG]'
+
+
 RED="\e[31m"
 GREEN="\e[32m"
 ENDCOLOR="\e[0m"
+
 
 if [ $# -eq 0 ]
   then
@@ -10,13 +16,16 @@ if [ $# -eq 0 ]
 fi
 
 echo -e "${GREEN}Updating${ENDCOLOR}"
-git checkout master
-git merge upstream/master
+git fetch upstream
+git rebase upstream/master
+git push origin master --force
+
+npm install
 
 echo -e "${GREEN}Building${ENDCOLOR}"
 gulp build
 
-echo "Copying files to: /home/fredy/.vscode/extensions/vscodevim.vim-$1/out"
-cp out/* "/home/fredy/.vscode/extensions/vscodevim.vim-$1/out"
+echo "Copying files to: $HOME/.vscode/extensions/vscodevim.vim-$1/out"
+cp out/* "${HOME}/.vscode/extensions/vscodevim.vim-$1/out"
 
 echo -e "${GREEN}Enjoy!!${ENDCOLOR}"
